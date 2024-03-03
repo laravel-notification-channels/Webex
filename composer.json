@@ -27,7 +27,9 @@
         "illuminate/support": "~10.0"
     },
     "require-dev": {
+        "laravel/pint": "^1.14",
         "mockery/mockery": "^1.0",
+        "phpstan/phpstan": "^1.10",
         "phpunit/phpunit": "^10.0",
         "scrutinizer/ocular": "^1.9"
     },
@@ -42,6 +44,9 @@
         }
     },
     "scripts": {
+        "analyse": "phpstan analyse --level 1 src tests",
+        "analyse:clear": "phpstan clear-result-cache",
+        "format": "pint",
         "test": "phpunit",
         "test:coverage": "phpunit --coverage-text --coverage-clover=coverage.clover"
     },
