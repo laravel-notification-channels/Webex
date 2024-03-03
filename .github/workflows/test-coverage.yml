@@ -1,12 +1,10 @@
-name: Unit test coverage
+name: Test Coverage
 
 on: workflow_dispatch
 
 jobs:
   tests:
     runs-on: ubuntu-latest
-
-    name: Unit test coverage
 
     steps:
       - name: Checkout code
