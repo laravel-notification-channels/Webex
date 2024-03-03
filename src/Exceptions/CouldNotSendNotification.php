@@ -12,23 +12,23 @@ class CouldNotSendNotification extends Exception
     {
         $code = $exception->getCode();
 
-        return new static("Webex responded with client error $code.", $code, $exception);
+        return new self("Webex responded with client error $code.", $code, $exception);
     }
 
     public static function webexRespondedWithServerError(ServerException $exception): CouldNotSendNotification
     {
         $code = $exception->getCode();
 
-        return new static("Webex responded with server error $code.", $code, $exception);
+        return new self("Webex responded with server error $code.", $code, $exception);
     }
 
     public static function communicationError(Exception $exception): CouldNotSendNotification
     {
-        return new static('Could not communicate with Webex.', $exception->getCode(), $exception);
+        return new self('Could not communicate with Webex.', $exception->getCode(), $exception);
     }
 
     public static function missingConfiguration(): CouldNotSendNotification
     {
-        return new static('Please ensure that Webex service url, id, and token are set.');
+        return new self('Please ensure that Webex service url, id, and token are set.');
     }
 }
