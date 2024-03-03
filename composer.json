@@ -59,5 +59,7 @@
                 "NotificationChannels\\Webex\\WebexServiceProvider"
             ]
         }
-    }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }
