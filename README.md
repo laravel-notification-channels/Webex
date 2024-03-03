@@ -9,23 +9,22 @@ This package makes it easy to send notifications using [Webex](https://www.webex
 10.x.
 
 ```php
-    /**
-     * Get the Webex Message representation of the notification.
-     *
-     * @param  mixed  $notifiable
-     * @return \NotificationChannels\Webex\WebexMessage
-     *
-     * @throws \NotificationChannels\Webex\Exceptions\CouldNotCreateNotification
-     */
-    public function toWebex($notifiable)
-    {
-        return (new WebexMessage)
-            ->text('The message, in plain text.')
-            ->markdown('# The message, in Markdown format.')
-            ->file(function (WebexMessageFile $file) {
-                $file->path('https://www.webex.com/content/dam/wbx/global/images/webex-favicon.png');
-            })
-    }
+/**
+ * Get the Webex Message representation of the notification.
+ *
+ * @return \NotificationChannels\Webex\WebexMessage
+ *
+ * @throws \NotificationChannels\Webex\Exceptions\CouldNotCreateNotification
+ */
+public function toWebex(mixed $notifiable)
+{
+    return (new WebexMessage)
+        ->text('The message, in plain text.')
+        ->markdown('# The message, in Markdown format.')
+        ->file(function (WebexMessageFile $file) {
+            $file->path('https://www.webex.com/content/dam/wbx/global/images/webex-favicon.png');
+        })
+}
 ```
 
 ## Contents
@@ -105,11 +104,8 @@ class InvoicePaid extends Notification
     
     /**
      * Get the notification's delivery channels.
-     *
-     * @param  mixed  $notifiable
-     * @return array
      */
-    public function via($notifiable)
+    public function via(mixed $notifiable): array
     {
         return [WebexChannel::class];
     }
@@ -130,11 +126,11 @@ Let's take a look at a basic `toWebex` example, which we could add to our `Invoi
 [above](#usage).
 
 ```php
-    public function toWebex($notifiable)
-    {
-        return (new WebexMessage)
-            ->text('Invoice Paid!');
-    }
+public function toWebex(mixed $notifiable): WebexMessage
+{
+    return (new WebexMessage)
+        ->text('Invoice Paid!');
+}
 ```
 
 ![Preview on (https://web.webex.com)](https://user-images.githubusercontent.com/6129517/154013451-22576d01-6452-41a8-94a9-76afe2ea4fd6.png)
@@ -145,11 +141,11 @@ Send a rich text notification message formatted using the Markdown markup langua
 `markdown` method.
 
 ```php
-    public function toWebex($notifiable)
-    {
-        return (new WebexMessage)
-            ->markdown('# Invoice Paid!');
-    }
+public function toWebex(mixed $notifiable): WebexMessage
+{
+    return (new WebexMessage)
+        ->markdown('# Invoice Paid!');
+}
 ```
 
 ![Preview on (https://web.webex.com)](https://user-images.githubusercontent.com/6129517/154013359-ae5cf5de-a6c1-4c64-bf4c-1008c041e1e6.png)
@@ -160,23 +156,23 @@ To mention someone in a group room/space use their registered Webex email addres
 identifier as shown below.
 
 ```php
-    public function toWebex($notifiable)
-    {
-        $mentionPersonEmail = 'baburao@example.com';
-        
-        return (new WebexMessage)
-            ->markdown("Hello <@personEmail:$mentionPersonEmail|Babu Bhaiya>! Your invoice is ready for payment.");
-    }
+public function toWebex(mixed $notifiable): WebexMessage
+{
+    $mentionPersonEmail = 'baburao@example.com';
+    
+    return (new WebexMessage)
+        ->markdown("Hello <@personEmail:$mentionPersonEmail|Babu Bhaiya>! Your invoice is ready for payment.");
+}
 ```
 
 ```php
-    public function toWebex($notifiable)
-    {
-        $mentionPersonId = 'Y2lzY29zcGFyazovL3VzL1BFT1BMRS85OTRmYjAyZS04MWI1LTRmNDItYTllYy1iNzE2OGRlOWUzZjY';
+public function toWebex(mixed $notifiable): WebexMessage
+{
+    $mentionPersonId = 'Y2lzY29zcGFyazovL3VzL1BFT1BMRS85OTRmYjAyZS04MWI1LTRmNDItYTllYy1iNzE2OGRlOWUzZjY';
 
-        return (new WebexMessage)
-            ->markdown("Hello <@personId:$mentionPersonId|Babu Bhaiya>! Your invoice is ready for payment.");
-    }
+    return (new WebexMessage)
+        ->markdown("Hello <@personId:$mentionPersonId|Babu Bhaiya>! Your invoice is ready for payment.");
+}
 ```
 
 ![Preview on (https://web.webex.com)](https://user-images.githubusercontent.com/6129517/154013737-ffb6dd9a-27c8-4463-9f4a-c8935ac8f90a.png)
@@ -184,11 +180,11 @@ identifier as shown below.
 To mention everyone in a group room/space, use the `<@all>` tag.
 
 ```php
-    public function toWebex($notifiable)
-    {
-        return (new WebexMessage)
-            ->markdown('Hello <@all>! An invoice is ready for payment.');
-    }
+public function toWebex(mixed $notifiable): WebexMessage
+{
+    return (new WebexMessage)
+        ->markdown('Hello <@all>! An invoice is ready for payment.');
+}
 ```
 
 ![Preview on (https://web.webex.com)](https://user-images.githubusercontent.com/6129517/154013869-91edc385-a78f-4cf0-9b49-d8a61b52079d.png)
@@ -198,11 +194,11 @@ To mention everyone in a group room/space, use the `<@all>` tag.
 To Link to a room/space use its Webex protocol handler, i.e. `webexteams://im?space=<space_id>`.
 
 ```php
-    public function toWebex($notifiable)
-    {
-        return (new WebexMessage)
-            ->markdown('We are in the webexteams://im?space=f58064a0-8e21-11ec-9d53-739134f9a8eb space.');
-    }
+public function toWebex(mixed $notifiable): WebexMessage
+{
+    return (new WebexMessage)
+        ->markdown('We are in the webexteams://im?space=f58064a0-8e21-11ec-9d53-739134f9a8eb space.');
+}
 ```
 
 ![Preview on (https://web.webex.com)](https://user-images.githubusercontent.com/6129517/154014364-eb36a360-1b09-47ac-9a3a-017e93bda31b.png)
@@ -216,17 +212,17 @@ local or of the form "scheme://...", that is accessible to your application. Opt
 also provide a name and MIME type to display on Webex clients.
 
 ```php
-    public function toWebex($notifiable)
-    {
-        $filePath = 'storage/app/invoices/uwnQ0uAXzq.pdf';
-        
-        return (new WebexMessage)
-            ->file(function (WebexMessageFile $file) use ($filePath){
-                $file->path($filePath)          // required
-                    ->name('invoice.pdf')       // optional
-                    ->type('application/pdf');  // optional
-            });
-    }
+public function toWebex(mixed $notifiable): WebexMessage
+{
+    $filePath = 'storage/app/invoices/uwnQ0uAXzq.pdf';
+    
+    return (new WebexMessage)
+        ->file(function (WebexMessageFile $file) use ($filePath){
+            $file->path($filePath)          // required
+                ->name('invoice.pdf')       // optional
+                ->type('application/pdf');  // optional
+        });
+}
 ```
 
 ![Preview on (https://web.webex.com)](https://user-images.githubusercontent.com/6129517/154014597-27eafbc0-01f0-465b-bcb0-cde6ad0d1d30.png)
@@ -246,33 +242,33 @@ attachment content must be a PHP array representation for an
 also provide a content type.
 
 ```php
-    public function toWebex($notifiable)
-    {
-        $invoicePaidCard = json_decode('{
-            "type": "AdaptiveCard",
-            "version": "1.0",
-            "body": [
-                {
-                    "type": "TextBlock",
-                    "text": "Invoice Paid!",
-                    "size": "large"
-                }
-            ],
-            "actions": [
-                {
-                    "type": "Action.OpenUrl",
-                    "url": "https://example.com/invoices/uwnQ0uAXzq.pdf",
-                    "title": "View Invoice"
-                }
-            ]
-        }');
+public function toWebex(mixed $notifiable): WebexMessage
+{
+    $invoicePaidCard = json_decode('{
+        "type": "AdaptiveCard",
+        "version": "1.0",
+        "body": [
+            {
+                "type": "TextBlock",
+                "text": "Invoice Paid!",
+                "size": "large"
+            }
+        ],
+        "actions": [
+            {
+                "type": "Action.OpenUrl",
+                "url": "https://example.com/invoices/uwnQ0uAXzq.pdf",
+                "title": "View Invoice"
+            }
+        ]
+    }');
 
-        return (new WebexMessage)
-            ->attachment(function (WebexMessageAttachment $attachment) use ($invoicePaidCard) {
-                $attachment->content($invoicePaidCard)                          // required
-                    ->contentType('application/vnd.microsoft.card.adaptive');   // optional
-            });
-    }
+    return (new WebexMessage)
+        ->attachment(function (WebexMessageAttachment $attachment) use ($invoicePaidCard) {
+            $attachment->content($invoicePaidCard)                          // required
+                ->contentType('application/vnd.microsoft.card.adaptive');   // optional
+        });
+}
 ```
 
 ![Preview on (https://web.webex.com)](https://user-images.githubusercontent.com/6129517/154014764-d9798d94-b924-4cf0-98f9-5273e045f408.png)
@@ -287,15 +283,15 @@ Note:
 Reply to a parent message and start or advance a thread via the `parentId` method.
 
 ```php
-    public function toWebex($notifiable)
-    {
-        $messageId = "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL01FU1NBR0UvNGY0ZGExOTAtOGUyMy0xMWVjLTljZWQtNmZkZWE5MjMxNmNj"
+public function toWebex(mixed $notifiable): WebexMessage
+{
+    $messageId = "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL01FU1NBR0UvNGY0ZGExOTAtOGUyMy0xMWVjLTljZWQtNmZkZWE5MjMxNmNj"
 
-        return (new WebexMessage)
-            ->parentId($messageId)
-            ->text("Invoice Paid!" . "\n"
-                   "No Further action required at this time");
-    }
+    return (new WebexMessage)
+        ->parentId($messageId)
+        ->text("Invoice Paid!" . "\n"
+               "No Further action required at this time");
+}
 ```
 
 ![image](https://user-images.githubusercontent.com/6129517/154110938-ddf32f57-c0bd-4e82-85ef-6402a232e1ed.png)
@@ -324,9 +320,9 @@ class User extends Authenticatable
      * Route notifications for the Webex channel.
      *
      * @param  \Illuminate\Notifications\Notification  $notification
-     * @return string
+     * @return string|null
      */
-    public function routeNotificationForWebex($notification)
+    public function routeNotificationForWebex($notification): string|null
     {
         if (!empty($this->email)) {             // a Webex registered email address
             return $this->email;
