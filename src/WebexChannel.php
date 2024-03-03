@@ -14,31 +14,23 @@ class WebexChannel
 {
     /**
      * The HTTP client instance.
-     *
-     * @var \GuzzleHttp\Client
      */
-    protected $http;
+    protected HttpClient $http;
 
     /**
      * Webex HTTP API URL.
-     *
-     * @var string
      */
-    protected $url;
+    protected string $url;
 
     /**
      * The sender's Webex ID.
-     *
-     * @var string
      */
-    protected $id;
+    protected string $id;
 
     /**
      * The sender's Webex Access Token.
-     *
-     * @var string
      */
-    protected $token;
+    protected string $token;
 
     public function __construct(HttpClient $http, string $url, string $id, string $token)
     {
@@ -51,8 +43,6 @@ class WebexChannel
     /**
      * Send the given notification.
      *
-     * @param  mixed  $notifiable
-     * @param  \Illuminate\Notifications\Notification  $notification
      * @return \Psr\Http\Message\ResponseInterface|void
      *
      * @throws Exceptions\CouldNotCreateNotification at least one of {@see WebexMessage} instance
@@ -61,7 +51,7 @@ class WebexChannel
      *                                             the Webex API can't be reached or responds
      *                                             with a client/server error
      */
-    public function send($notifiable, Notification $notification)
+    public function send(mixed $notifiable, Notification $notification)
     {
         if (! $recipient = $notifiable->routeNotificationFor('webex', $notification)) {
             return;

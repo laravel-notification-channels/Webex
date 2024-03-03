@@ -9,27 +9,22 @@ use JsonSerializable;
 /**
  * This class provides a fluent interface for creating a Webex Message Attachment representation.
  */
-class WebexMessageAttachment implements Arrayable, JsonSerializable, Jsonable
+class WebexMessageAttachment implements Arrayable, Jsonable, JsonSerializable
 {
     /**
      * The content type of the attachment.
-     *
-     * @var string
      */
-    public $contentType = 'application/vnd.microsoft.card.adaptive';
+    public string $contentType = 'application/vnd.microsoft.card.adaptive';
 
     /**
      * The content of the attachment.
      *
      * @var array|mixed
      */
-    public $content;
+    public mixed $content;
 
     /**
      * Set the content type of the attachment.
-     *
-     * @param  string  $contentType
-     * @return WebexMessageAttachment
      */
     public function contentType(string $contentType): WebexMessageAttachment
     {
@@ -42,12 +37,11 @@ class WebexMessageAttachment implements Arrayable, JsonSerializable, Jsonable
      * Set the content of the attachment.
      *
      * @param  array|mixed  $content
-     * @return WebexMessageAttachment
      *
      * @link https://developer.webex.com/buttons-and-cards-designer
      * @link https://adaptivecards.io/
      */
-    public function content($content): WebexMessageAttachment
+    public function content(mixed $content): WebexMessageAttachment
     {
         $this->content = $content;
 
@@ -96,7 +90,7 @@ class WebexMessageAttachment implements Arrayable, JsonSerializable, Jsonable
      *
      * @internal
      */
-    public function toJson($options = 0)
+    public function toJson($options = 0): string
     {
         return json_encode($this->jsonSerialize(), $options);
     }

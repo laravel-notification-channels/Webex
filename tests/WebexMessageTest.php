@@ -15,15 +15,23 @@ use PHPUnit\Framework\TestCase;
  */
 class WebexMessageTest extends TestCase
 {
-    protected static $email = 'email@wxample.com';
-    protected static $personId = 'Y2lzY29zcGFyazovL3VzL1BFT1BMRS85OTRmYjAyZS04MWI1LTRmNDItYTllYy1iNzE2OGRlOWUzZjY';
-    protected static $botId = 'Y2lzY29zcGFyazovL3VzL0FQUExJQ0FUSU9OLzQxMmRhYjY4LTU3ZDAtNGU0Mi05MTJmLTIzODk2ODcyYTMwMg';
-    protected static $roomId = 'Y2lzY29zcGFyazovL3VzL1JPT00vOTU5Y2M0YzAtMjMxNC0xMWVjLWFhMDUtZWYxMmNlMmE5YjJi';
-    protected static $text = 'The message, in plain text.';
-    protected static $markdown = '# The message, in Markdown format.';
-    protected static $parentId = 'Y2lzY29zcGFyazovL3VzL01FU1NBR0UvMjExN2ZjZTAtODcwMS0xMWVjLThjNDgtZmYzMmYwOWExMjNj';
-    protected static $filepath = __DIR__.'/fixtures/file.txt';
-    protected static $card = [
+    protected static string $email = 'email@wxample.com';
+
+    protected static string $personId = 'Y2lzY29zcGFyazovL3VzL1BFT1BMRS85OTRmYjAyZS04MWI1LTRmNDItYTllYy1iNzE2OGRlOWUzZjY';
+
+    protected static string $botId = 'Y2lzY29zcGFyazovL3VzL0FQUExJQ0FUSU9OLzQxMmRhYjY4LTU3ZDAtNGU0Mi05MTJmLTIzODk2ODcyYTMwMg';
+
+    protected static string $roomId = 'Y2lzY29zcGFyazovL3VzL1JPT00vOTU5Y2M0YzAtMjMxNC0xMWVjLWFhMDUtZWYxMmNlMmE5YjJi';
+
+    protected static string $text = 'The message, in plain text.';
+
+    protected static string $markdown = '# The message, in Markdown format.';
+
+    protected static string $parentId = 'Y2lzY29zcGFyazovL3VzL01FU1NBR0UvMjExN2ZjZTAtODcwMS0xMWVjLThjNDgtZmYzMmYwOWExMjNj';
+
+    protected static string $filepath = __DIR__.'/fixtures/file.txt';
+
+    protected static array $card = [
         'type' => 'AdaptiveCard',
         'body' => [
             [

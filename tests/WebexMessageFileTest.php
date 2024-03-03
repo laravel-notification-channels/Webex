@@ -12,16 +12,16 @@ use PHPUnit\Framework\TestCase;
  */
 class WebexMessageFileTest extends TestCase
 {
-    protected static $localFilepath = __DIR__.'/fixtures/file.txt';
-    protected static $remoteFilepath = 'https://www.webex.com/content/dam/wbx/global/images/webex-favicon.png';
+    protected static string $localFilepath = __DIR__.'/fixtures/file.txt';
+
+    protected static string $remoteFilepath = 'https://www.webex.com/content/dam/wbx/global/images/webex-favicon.png';
 
     /**
      * Checks and transforms a stream resource into a string, in-place.
      *
      * @param  resource|mixed  $item  some value
-     * @return void
      */
-    protected static function getResourceContents(&$item)
+    protected static function getResourceContents(mixed &$item): void
     {
         if (is_resource($item)) {
             $item = stream_get_contents($item);
