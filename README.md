@@ -3,9 +3,6 @@
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/laravel-notification-channels/webex.svg?style=flat-square)](https://packagist.org/packages/laravel-notification-channels/webex)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
 [![Build Status](https://img.shields.io/github/workflow/status/askmrsinh/channels/PHPUnit%20tests.svg?style=flat-square)](https://github.com/askmrsinh/channels/actions/workflows/tests.yml)
-[![StyleCI](https://styleci.io/repos/459859200/shield)](https://styleci.io/repos/459859200)
-[![Quality Score](https://img.shields.io/scrutinizer/quality/g/askmrsinh/channels.svg?style=flat-square)](https://scrutinizer-ci.com/g/askmrsinh/channels/?branch=master)
-[![Code Coverage](https://img.shields.io/scrutinizer/coverage/g/askmrsinh/channels.svg?style=flat-square)](https://scrutinizer-ci.com/g/askmrsinh/channels/?branch=master)
 [![Total Downloads](https://img.shields.io/packagist/dt/laravel-notification-channels/webex.svg?style=flat-square)](https://packagist.org/packages/laravel-notification-channels/webex)
 
 This package makes it easy to send notifications using [Webex](https://www.webex.com/) with Laravel
