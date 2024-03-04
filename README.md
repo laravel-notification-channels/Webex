@@ -2,11 +2,10 @@
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/laravel-notification-channels/webex.svg?style=flat-square)](https://packagist.org/packages/laravel-notification-channels/webex)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
-[![Build Status](https://img.shields.io/github/workflow/status/askmrsinh/channels/PHPUnit%20tests.svg?style=flat-square)](https://github.com/askmrsinh/channels/actions/workflows/tests.yml)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/laravel-notification-channels/webex/test.yml?branch=main&style=flat-square)](https://github.com/laravel-notification-channels/webex/actions/workflows/test.yml)
 [![Total Downloads](https://img.shields.io/packagist/dt/laravel-notification-channels/webex.svg?style=flat-square)](https://packagist.org/packages/laravel-notification-channels/webex)
 
-This package makes it easy to send notifications using [Webex](https://www.webex.com/) with Laravel
-10.x.
+This package makes it easy to send notifications using [Webex](https://www.webex.com/) with Laravel 10.x.
 
 ```php
 /**
@@ -23,27 +22,29 @@ public function toWebex(mixed $notifiable)
         ->markdown('# The message, in Markdown format.')
         ->file(function (WebexMessageFile $file) {
             $file->path('https://www.webex.com/content/dam/wbx/global/images/webex-favicon.png');
-        })
+        });
 }
 ```
 
 ## Contents
 
 - [Installation](#installation)
+  - [Install the package using Composer](#install-the-package-using-composer)
+  - [Add service configuration for Webex](#add-service-configuration-for-webex)
 - [Usage](#usage)
-    * [Formatting Webex Notifications](#formatting-webex-notifications)
-        + [Plain Text Message](#plain-text-message)
-        + [Rich Text Message](#rich-text-message)
-        + [User and Group Mentions](#user-and-group-mentions)
-        + [Room/Space Linking](#roomspace-linking)
-        + [Including a File](#including-a-file)
-        + [Including an Attachment](#including-an-attachment)
-        + [Replying to a Parent Message](#replying-to-a-parent-message)
-    * [Routing Webex Notifications](#routing-webex-notifications)
+  - [Formatting Webex Notifications](#formatting-webex-notifications)
+    - [Plain Text Message](#plain-text-message)
+    - [Rich Text Message](#rich-text-message)
+    - [Including an Attachment](#including-an-attachment)
+    - [Including a File](#including-a-file)
+    - [Replying to a Parent Message](#replying-to-a-parent-message)
+    - [User and Group Mentions](#user-and-group-mentions)
+    - [Room/Space Linking](#roomspace-linking)
+  - [Routing Webex Notifications](#routing-webex-notifications)
 - [Available Methods](#available-methods)
-    * [Webex Message Methods](#webex-message-methods)
-    * [Webex Message File Methods](#webex-message-file-methods)
-    * [Webex Message Attachment Methods](#webex-message-attachment-methods)
+    - [Webex Message Methods](#webex-message-methods)
+    - [Webex Message File Methods](#webex-message-file-methods)
+    - [Webex Message Attachment Methods](#webex-message-attachment-methods)
 - [Changelog](#changelog)
 - [Testing](#testing)
 - [Security](#security)
@@ -51,17 +52,21 @@ public function toWebex(mixed $notifiable)
 - [Credits](#credits)
 - [License](#license)
 
-
 ## Installation
 
-Install the package using Composer:
+To use this package, you need to add it as a dependency to your project and provide the necessary configuration.
 
+### Install the package using Composer
+
+Pull in and manage the Webex notifications package easily with Composer:
 ```bash
 composer require laravel-notification-channels/webex
 ```
 
-You will also need to include a Webex service configuration to your application. To do this, edit
-the `config/services.php` file and add the following:
+### Add service configuration for Webex
+
+You will also need to include a Webex service configuration to your application. To do this, edit the
+`config/services.php` file, and add the following, or if the `webex` key already exists, merge:
 
 ```php
 'webex' => [
@@ -71,37 +76,36 @@ the `config/services.php` file and add the following:
 ],
 ```
 
-Then use the `WEBEX_NOTIFICATION_CHANNEL_ID` and `WEBEX_NOTIFICATION_CHANNEL_TOKEN`
-[environment variables](https://laravel.com/docs/9.x/configuration#environment-configuration)
+Use the `WEBEX_NOTIFICATION_CHANNEL_ID` and `WEBEX_NOTIFICATION_CHANNEL_TOKEN`
+[environment variables](https://laravel.com/docs/10.x/configuration#environment-configuration)
 to define your Webex ID and Token. One way to get these values is by creating a new
 [Webex Bot](https://developer.webex.com/my-apps/new/bot).
 
 ## Usage
 
-If you are new to Laravel Notification, I highly recommend reading the official documentation which
-goes over the basics
-of [generating](https://laravel.com/docs/9.x/notifications#generating-notifications)
-and [sending](https://laravel.com/docs/9.x/notifications#sending-notifications) notifications.  
+If you are new to Laravel Notification, I highly recommend reading the official documentation which goes over the basics
+of [generating](https://laravel.com/docs/10.x/notifications#generating-notifications)
+and [sending](https://laravel.com/docs/10.x/notifications#sending-notifications) notifications.
 The guide below assumes that you have successfully generated a notification class with a
-[`via`](https://laravel.com/docs/9.x/notifications#specifying-delivery-channels)
+[`via`](https://laravel.com/docs/10.x/notifications#specifying-delivery-channels)
 method whose return value includes `'webex'` or `NotificationChannels\Webex\WebexChannel::class`.
 For example:
 
 ```php
 <?php
- 
+
 namespace App\Notifications;
- 
+
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use NotificationChannels\Webex\WebexChannel;
- 
+
 class InvoicePaid extends Notification
 {
     use Queueable;
- 
+
     // ...
-    
+
     /**
      * Get the notification's delivery channels.
      */
@@ -109,17 +113,20 @@ class InvoicePaid extends Notification
     {
         return [WebexChannel::class];
     }
-    
+
     // ...
 }
 ```
+
+To format notifications for Webex, define a `toWebex` method on the notification class and a `routeNotificationForWebex`
+method on the notifiable entity. These steps are discussed below.
 
 ### Formatting Webex Notifications
 
 If a notification supports being sent as a Webex message, you should define a `toWebex`
 method on the notification class. This method will receive a `$notifiable` entity and should return
-a `\NotificationChannels\Webex\WebexMessage` instance. Webex messages may contain text content 
-as well as at most one file or an attachment (for [buttons and cards](https://developer.webex.com/buttons-and-cards-designer)). 
+a `\NotificationChannels\Webex\WebexMessage` instance. Webex messages may contain text content
+as well as at most one file or an attachment (for [buttons and cards](https://developer.webex.com/buttons-and-cards-designer)).
 
 #### Plain Text Message
 Let's take a look at a basic `toWebex` example, which we could add to our `InvoicePaid` class
@@ -149,6 +156,99 @@ public function toWebex(mixed $notifiable): WebexMessage
 ```
 
 ![Preview on (https://web.webex.com)](https://user-images.githubusercontent.com/6129517/154013359-ae5cf5de-a6c1-4c64-bf4c-1008c041e1e6.png)
+
+#### Including an Attachment
+
+A notification message can have at most one attachment that you can include via the
+`attachment` helper method.  
+When calling the `attachment` method, you should provide the content of the attachment. The
+attachment content must be a PHP array representation for an
+[adaptive card](https://developer.webex.com/buttons-and-cards-designer). Optionally, you can
+also provide a content type.
+
+```php
+public function toWebex(mixed $notifiable): WebexMessage
+{
+    $invoicePaidCard = json_decode('{
+        "type": "AdaptiveCard",
+        "version": "1.0",
+        "body": [
+            {
+                "type": "TextBlock",
+                "text": "Invoice Paid!",
+                "size": "large"
+            }
+        ],
+        "actions": [
+            {
+                "type": "Action.OpenUrl",
+                "url": "https://example.com/invoices/uwnQ0uAXzq.pdf",
+                "title": "View Invoice"
+            }
+        ]
+    }');
+
+    return (new WebexMessage)
+        ->attachment(function (WebexMessageAttachment $attachment) use ($invoicePaidCard) {
+            $attachment->content($invoicePaidCard)                          // required
+                ->contentType('application/vnd.microsoft.card.adaptive');   // optional
+        });
+}
+```
+
+![Preview on (https://web.webex.com)](https://user-images.githubusercontent.com/6129517/154014764-d9798d94-b924-4cf0-98f9-5273e045f408.png)
+
+> [!NOTE]
+> - Including multiple attachments in the same message is not supported by the `attachment` helper.
+> - Including attachment and file in the same message is not supported by the `attachment` helper.
+> - For supported attachment types, please refer Webex HTTP API documentation.
+
+#### Including a File
+
+A notification message can have at most one file that you can include via the
+`file` helper method.  
+When calling the `file` method, you should provide the path of the file. The file path could be
+local or of the form "scheme://...", that is accessible to your application. Optionally, you can
+also provide a name and MIME type to display on Webex clients.
+
+```php
+public function toWebex(mixed $notifiable): WebexMessage
+{
+    $filePath = 'storage/app/invoices/uwnQ0uAXzq.pdf';
+    
+    return (new WebexMessage)
+        ->file(function (WebexMessageFile $file) use ($filePath){
+            $file->path($filePath)          // required
+                ->name('invoice.pdf')       // optional
+                ->type('application/pdf');  // optional
+        });
+}
+```
+
+![Preview on (https://web.webex.com)](https://user-images.githubusercontent.com/6129517/154014597-27eafbc0-01f0-465b-bcb0-cde6ad0d1d30.png)
+
+> [!NOTE]
+> - Including multiple files in the same message is not supported by the `file` helper.
+> - Including file and attachment in the same message is not supported by the `file` helper.
+> - For supported MIME types and file size limits, please refer Webex HTTP API documentation. 
+
+#### Replying to a Parent Message
+
+Reply to a parent message and start or advance a thread via the `parentId` method.
+
+```php
+public function toWebex(mixed $notifiable): WebexMessage
+{
+    $messageId = "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL01FU1NBR0UvNGY0ZGExOTAtOGUyMy0xMWVjLTljZWQtNmZkZWE5MjMxNmNj"
+
+    return (new WebexMessage)
+        ->parentId($messageId)
+        ->text("Invoice Paid!" . "\n"
+               "No Further action required at this time");
+}
+```
+
+![Preview on (https://web.webex.com)](https://user-images.githubusercontent.com/6129517/154110938-ddf32f57-c0bd-4e82-85ef-6402a232e1ed.png)
 
 #### User and Group Mentions
 
@@ -203,100 +303,6 @@ public function toWebex(mixed $notifiable): WebexMessage
 
 ![Preview on (https://web.webex.com)](https://user-images.githubusercontent.com/6129517/154014364-eb36a360-1b09-47ac-9a3a-017e93bda31b.png)
 
-#### Including a File
-
-A notification message can have at most one file that you can include via the
-`file` helper method.  
-When calling the `file` method, you should provide the path of the file. The file path could be
-local or of the form "scheme://...", that is accessible to your application. Optionally, you can 
-also provide a name and MIME type to display on Webex clients.
-
-```php
-public function toWebex(mixed $notifiable): WebexMessage
-{
-    $filePath = 'storage/app/invoices/uwnQ0uAXzq.pdf';
-    
-    return (new WebexMessage)
-        ->file(function (WebexMessageFile $file) use ($filePath){
-            $file->path($filePath)          // required
-                ->name('invoice.pdf')       // optional
-                ->type('application/pdf');  // optional
-        });
-}
-```
-
-![Preview on (https://web.webex.com)](https://user-images.githubusercontent.com/6129517/154014597-27eafbc0-01f0-465b-bcb0-cde6ad0d1d30.png)
-
-Note:
- - Including multiple files in the same message is not supported by the `file` helper.
- - Including file and attachment in the same message is not supported by the `file` helper.
- - For supported MIME types and file size limits, please refer Webex HTTP API documentation.
-
-#### Including an Attachment
-
-A notification message can have at most one attachment that you can include via the
-`attachment` helper method.  
-When calling the `attachment` method, you should provide the content of the attachment. The
-attachment content must be a PHP array representation for an
-[adaptive card](https://developer.webex.com/buttons-and-cards-designer). Optionally, you can 
-also provide a content type.
-
-```php
-public function toWebex(mixed $notifiable): WebexMessage
-{
-    $invoicePaidCard = json_decode('{
-        "type": "AdaptiveCard",
-        "version": "1.0",
-        "body": [
-            {
-                "type": "TextBlock",
-                "text": "Invoice Paid!",
-                "size": "large"
-            }
-        ],
-        "actions": [
-            {
-                "type": "Action.OpenUrl",
-                "url": "https://example.com/invoices/uwnQ0uAXzq.pdf",
-                "title": "View Invoice"
-            }
-        ]
-    }');
-
-    return (new WebexMessage)
-        ->attachment(function (WebexMessageAttachment $attachment) use ($invoicePaidCard) {
-            $attachment->content($invoicePaidCard)                          // required
-                ->contentType('application/vnd.microsoft.card.adaptive');   // optional
-        });
-}
-```
-
-![Preview on (https://web.webex.com)](https://user-images.githubusercontent.com/6129517/154014764-d9798d94-b924-4cf0-98f9-5273e045f408.png)
-
-Note:
-- Including multiple attachments in the same message is not supported by the `attachment` helper.
-- Including attachment and file in the same message is not supported by the `attachment` helper.
-- For supported attachment types, please refer Webex HTTP API documentation.
-
-#### Replying to a Parent Message
-
-Reply to a parent message and start or advance a thread via the `parentId` method.
-
-```php
-public function toWebex(mixed $notifiable): WebexMessage
-{
-    $messageId = "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL01FU1NBR0UvNGY0ZGExOTAtOGUyMy0xMWVjLTljZWQtNmZkZWE5MjMxNmNj"
-
-    return (new WebexMessage)
-        ->parentId($messageId)
-        ->text("Invoice Paid!" . "\n"
-               "No Further action required at this time");
-}
-```
-
-![image](https://user-images.githubusercontent.com/6129517/154110938-ddf32f57-c0bd-4e82-85ef-6402a232e1ed.png)
-
-
 ### Routing Webex Notifications
 
 To route Webex notifications to the proper Webex user or room/space, define a
@@ -339,22 +345,22 @@ class User extends Authenticatable
 
 ## Available Methods
 
-The package consists of three Webex messaging classes:
-- `\NotificationChannels\Webex\WebexMessage` 
-- `\NotificationChannels\Webex\WebexMessageFile`
-- `\NotificationChannels\Webex\WebexMessageAttachment`
+Methods available for converting Webex message instances:
 
-All three of them implement a `toArray` method that returns the instance as an array suitable 
-for `multipart/form-data` request.
-Additionally, the `WebexMessage`and `WebexMessageAttachment`classes also implement `jsonSerialize` 
-and `toJson` methods. The `jsonSerialize` method returns the instance as an array suitable for 
-`application/json` request or `json_encode`, while the `toJson` method returns the instance as 
-a JSON string.
-All three of these methods are used internally for creating the request payload to Webex HTTP API.
+- `toArray()`:
+    - Implemented by all three classes ([`\NotificationChannels\Webex\WebexMessage`](src/WebexMessage.php), [`\NotificationChannels\Webex\WebexMessageFile`](src/WebexMessageFile.php), [`\NotificationChannels\Webex\WebexMessageAttachment`](src/WebexMessageAttachment.php))
+    - Returns the instance as an array suitable for `multipart/form-data` request
+- `jsonSerialize()`:
+    - Implemented by [`\NotificationChannels\Webex\WebexMessage`](src/WebexMessage.php) and [`\NotificationChannels\Webex\WebexMessageAttachment`](src/WebexMessageAttachment.php) classes
+    - Returns the instance as an array suitable for `application/json` request or `json_encode`
+- `toJson(int $options)`:
+    - Implemented by [`\NotificationChannels\Webex\WebexMessage`](src/WebexMessage.php) and [`\NotificationChannels\Webex\WebexMessageAttachment`](src/WebexMessageAttachment.php) classes
+    - Returns the instance as a JSON string
+- These methods are used internally for creating the request payload to Webex HTTP API.
 
 ### Webex Message Methods
 
-Public methods of the `\NotificationChannels\Webex\WebexMessage` class:
+Public methods of the [`\NotificationChannels\Webex\WebexMessage`](src/WebexMessage.php) class:
 
 - `text(string $content)`: Set the content of the message, in plain text.
 - `markdown(string $content)`: Set the content of the message, in Markdown format.
@@ -365,7 +371,7 @@ Public methods of the `\NotificationChannels\Webex\WebexMessage` class:
 
 ### Webex Message File Methods
 
-Public methods of the `\NotificationChannels\Webex\WebexMessageFile` class:
+Public methods of the [`\NotificationChannels\Webex\WebexMessageFile`](src/WebexMessageFile.php) class:
 
 - `path(string $path)`: Set the path for the file.
 - `name(string $name)`: Set the user provided name for the file.
@@ -373,7 +379,7 @@ Public methods of the `\NotificationChannels\Webex\WebexMessageFile` class:
 
 ### Webex Message Attachment Methods
 
-Public methods of the `\NotificationChannels\Webex\WebexMessageAttachment` class:
+Public methods of the [`\NotificationChannels\Webex\WebexMessageAttachment`](src/WebexMessageAttachment.php) class:
 
 - `contentType(string $contentType)`: Set the content type of the attachment.
 - `content($content)`: Set the content of the attachment.
@@ -390,8 +396,7 @@ $ composer test
 
 ## Security
 
-If you discover any security related issues, please email ask@mrsinh.com instead of using the issue
-tracker.
+If you discover any security related issues, please email ask@mrsinh.com instead of using the issue tracker.
 
 ## Contributing
 
