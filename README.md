@@ -29,8 +29,8 @@ public function toWebex(mixed $notifiable)
 ## Contents
 
 - [Installation](#installation)
-  - [Install the package using Composer](#install-the-package-using-composer)
-  - [Add service configuration for Webex](#add-service-configuration-for-webex)
+  - [Install the Package Using Composer](#install-the-package-using-composer)
+  - [Add Service Configuration for Webex](#add-service-configuration-for-webex)
 - [Usage](#usage)
   - [Formatting Webex Notifications](#formatting-webex-notifications)
     - [Plain Text Message](#plain-text-message)
@@ -56,14 +56,14 @@ public function toWebex(mixed $notifiable)
 
 To use this package, you need to add it as a dependency to your project and provide the necessary configuration.
 
-### Install the package using Composer
+### Install the Package Using Composer
 
 Pull in and manage the Webex notifications package easily with Composer:
 ```bash
 composer require laravel-notification-channels/webex
 ```
 
-### Add service configuration for Webex
+### Add Service Configuration for Webex
 
 You will also need to include a Webex service configuration to your application. To do this, edit the
 `config/services.php` file, and add the following, or if the `webex` key already exists, merge:
