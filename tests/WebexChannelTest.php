@@ -25,18 +25,14 @@ class WebexChannelTest extends TestCase
      */
     private $guzzleHttp;
 
-    /**
-     * @var WebexChannel
-     */
-    private $webexChannel;
+    private WebexChannel $webexChannel;
 
     /**
      * Checks and transforms a stream resource into a string, in-place.
      *
      * @param  resource|mixed  $item  some value
-     * @return void
      */
-    protected static function getResourceContents(&$item)
+    protected static function getResourceContents(&$item): void
     {
         if (is_resource($item)) {
             $item = stream_get_contents($item);
@@ -45,9 +41,6 @@ class WebexChannelTest extends TestCase
 
     /**
      * @dataProvider payloadDataProvider
-     *
-     * @param  Notification  $notification
-     * @param  array  $payload
      */
     public function testCorrectPayloadIsSentToWebex(Notification $notification, array $payload)
     {
@@ -391,7 +384,7 @@ class WebexChannelTestNotifiable
 {
     use Notifiable;
 
-    public function routeNotificationForWebex()
+    public function routeNotificationForWebex(): string
     {
         return 'email@example.com';
     }

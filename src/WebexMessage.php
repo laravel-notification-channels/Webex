@@ -13,54 +13,43 @@ use NotificationChannels\Webex\Exceptions\CouldNotCreateNotification;
 /**
  * This class provides a fluent interface for creating a Webex Message representation.
  */
-class WebexMessage implements Arrayable, JsonSerializable, Jsonable
+class WebexMessage implements Arrayable, Jsonable, JsonSerializable
 {
     /**
      * The room ID of the message.
-     *
-     * @var string
      */
-    public $roomId;
+    public ?string $roomId = null;
 
     /**
      * The parent message to reply to.
-     *
-     * @var string
      */
-    public $parentId;
+    public ?string $parentId = null;
 
     /**
      * The person ID of the recipient when sending a direct 1:1 message.
-     *
-     * @var string
      */
-    public $toPersonId;
+    public ?string $toPersonId = null;
 
     /**
      * The email address of the recipient when sending a direct 1:1 message.
-     *
-     * @var string
      */
-    public $toPersonEmail;
+    public ?string $toPersonEmail = null;
 
     /**
      * The message, in plain text.
-     *
-     * @var string
      */
-    public $text;
+    public ?string $text = null;
 
     /**
      * The message, in Markdown format.
      *
-     * @var string
      *
      * @link https://developer.webex.com/docs/basics#formatting-messages
      */
-    public $markdown;
+    public ?string $markdown = null;
 
     /**
-     * Files to include in the message.
+     * File to include in the message.
      *
      * **NOTES:**
      * 1. Despite the plural naming, the Webex HTTP API supports only one file per message.
@@ -71,10 +60,10 @@ class WebexMessage implements Arrayable, JsonSerializable, Jsonable
      * @see \NotificationChannels\Webex\WebexMessage::file()
      * @link https://developer.webex.com/docs/api/v1/messages/create-a-message
      */
-    public $files;
+    public ?array $files = null;
 
     /**
-     * Attachments to include in the message.
+     * Attachment to include in the message.
      *
      * **NOTES:**
      * 1. Despite the plural naming, the Webex HTTP API supports only one attachment per message.
@@ -85,13 +74,12 @@ class WebexMessage implements Arrayable, JsonSerializable, Jsonable
      * @see \NotificationChannels\Webex\WebexMessage::attachment()
      * @link https://developer.webex.com/docs/api/v1/messages/create-a-message
      */
-    public $attachments;
+    public ?array $attachments = null;
 
     /**
      * Set the content of the message, in plain text.
      *
      * @param  string  $content  message in plain text
-     * @return WebexMessage
      */
     public function text(string $content): WebexMessage
     {
@@ -104,7 +92,6 @@ class WebexMessage implements Arrayable, JsonSerializable, Jsonable
      * Set the content of the message, in Markdown format.
      *
      * @param  string  $content  message in Markdown
-     * @return WebexMessage
      *
      * @link https://developer.webex.com/docs/basics#formatting-messages
      */
@@ -183,8 +170,7 @@ class WebexMessage implements Arrayable, JsonSerializable, Jsonable
     /**
      * Set a file to include in the message.
      *
-     * @param  Closure  $callback
-     * @return WebexMessage
+     * @return $this
      *
      * @throws CouldNotCreateNotification when setting more than one file on the instance or
      *                                    setting a file when instance already has an attachment
@@ -215,8 +201,7 @@ class WebexMessage implements Arrayable, JsonSerializable, Jsonable
      * If both {@see $text} and {@see $markdown} are unassigned, {@see $text} will be
      * assigned an empty string value.
      *
-     * @param  Closure  $callback
-     * @return WebexMessage
+     * @return $this
      *
      * @throws CouldNotCreateNotification when setting more than one attachment on the instance or
      *                                    setting an attachment when instance already has a file
@@ -352,7 +337,7 @@ class WebexMessage implements Arrayable, JsonSerializable, Jsonable
      * @return string[]|false the three components of decoded Webex HTTP API resource identifier
      *                        as an array of strings or false on failure
      */
-    protected function decodeApiId(string $id)
+    protected function decodeApiId(string $id): array|false
     {
         $pattern = '#.*/(.*)/(.*)$#';
         $spark_uri = base64_decode($id);

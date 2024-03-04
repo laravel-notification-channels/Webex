@@ -12,7 +12,7 @@ use PHPUnit\Framework\TestCase;
  */
 class WebexMessageAttachmentTest extends TestCase
 {
-    protected static $card = [
+    protected static array $card = [
         'type' => 'AdaptiveCard',
         'body' => [
             [

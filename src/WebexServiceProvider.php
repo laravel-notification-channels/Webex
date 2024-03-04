@@ -19,7 +19,7 @@ class WebexServiceProvider extends ServiceProvider
     /**
      * Register the application services.
      */
-    public function register()
+    public function register(): void
     {
         $this->app->bind(WebexChannel::class, function ($app) {
             return new WebexChannel(
