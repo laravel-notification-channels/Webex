@@ -43,8 +43,8 @@ public function toWebex(mixed $notifiable)
   - [Routing Webex Notifications](#routing-webex-notifications)
 - [Available Methods](#available-methods)
     - [Webex Message Methods](#webex-message-methods)
-    - [Webex Message File Methods](#webex-message-file-methods)
     - [Webex Message Attachment Methods](#webex-message-attachment-methods)
+    - [Webex Message File Methods](#webex-message-file-methods)
 - [Changelog](#changelog)
 - [Testing](#testing)
 - [Security](#security)
@@ -368,6 +368,13 @@ Public methods of the [`WebexMessage`](src/WebexMessage.php) class:
 - `file(Closure $callback)`: Set a file to include in the message.
 - `attachment(Closure $callback)`: Set an attachment to include in the message.
 
+### Webex Message Attachment Methods
+
+Public methods of the [`WebexMessageAttachment`](src/WebexMessageAttachment.php) class:
+
+- `contentType(string $contentType)`: Set the content type of the attachment.
+- `content($content)`: Set the content of the attachment.
+
 ### Webex Message File Methods
 
 Public methods of the [`WebexMessageFile`](src/WebexMessageFile.php) class:
@@ -375,13 +382,6 @@ Public methods of the [`WebexMessageFile`](src/WebexMessageFile.php) class:
 - `path(string $path)`: Set the path for the file.
 - `name(string $name)`: Set the user provided name for the file.
 - `type(string $type)`: Set the user provided MIME type for the file.
-
-### Webex Message Attachment Methods
-
-Public methods of the [`WebexMessageAttachment`](src/WebexMessageAttachment.php) class:
-
-- `contentType(string $contentType)`: Set the content type of the attachment.
-- `content($content)`: Set the content of the attachment.
 
 ## Changelog
 
