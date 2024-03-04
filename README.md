@@ -160,8 +160,7 @@ public function toWebex(mixed $notifiable): WebexMessage
 #### Including an Attachment
 
 A notification message can have at most one attachment that you can include via the
-`attachment` helper method.  
-When calling the `attachment` method, you should provide the content of the attachment. The
+`attachment` helper method. When calling the `attachment` method, you should provide the content of the attachment. The
 attachment content must be a PHP array representation for an
 [adaptive card](https://developer.webex.com/buttons-and-cards-designer). Optionally, you can
 also provide a content type.
@@ -206,8 +205,7 @@ public function toWebex(mixed $notifiable): WebexMessage
 #### Including a File
 
 A notification message can have at most one file that you can include via the
-`file` helper method.  
-When calling the `file` method, you should provide the path of the file. The file path could be
+`file` helper method. When calling the `file` method, you should provide the path of the file. The file path could be
 local or of the form "scheme://...", that is accessible to your application. Optionally, you can
 also provide a name and MIME type to display on Webex clients.
 
@@ -348,14 +346,14 @@ class User extends Authenticatable
 Methods available for converting Webex message instances:
 
 - `toArray()`:
-    - Implemented by all three classes ([`\NotificationChannels\Webex\WebexMessage`](src/WebexMessage.php), [`\NotificationChannels\Webex\WebexMessageFile`](src/WebexMessageFile.php), [`\NotificationChannels\Webex\WebexMessageAttachment`](src/WebexMessageAttachment.php))
-    - Returns the instance as an array suitable for `multipart/form-data` request
+  - Implemented by all three classes ([`\NotificationChannels\Webex\WebexMessage`](src/WebexMessage.php), [`\NotificationChannels\Webex\WebexMessageFile`](src/WebexMessageFile.php), [`\NotificationChannels\Webex\WebexMessageAttachment`](src/WebexMessageAttachment.php))
+  - Returns the instance as an array suitable for `multipart/form-data` request
 - `jsonSerialize()`:
-    - Implemented by [`\NotificationChannels\Webex\WebexMessage`](src/WebexMessage.php) and [`\NotificationChannels\Webex\WebexMessageAttachment`](src/WebexMessageAttachment.php) classes
-    - Returns the instance as an array suitable for `application/json` request or `json_encode`
+  - Implemented by [`\NotificationChannels\Webex\WebexMessage`](src/WebexMessage.php) and [`\NotificationChannels\Webex\WebexMessageAttachment`](src/WebexMessageAttachment.php) classes
+  - Returns the instance as an array suitable for `application/json` request or `json_encode`
 - `toJson(int $options)`:
-    - Implemented by [`\NotificationChannels\Webex\WebexMessage`](src/WebexMessage.php) and [`\NotificationChannels\Webex\WebexMessageAttachment`](src/WebexMessageAttachment.php) classes
-    - Returns the instance as a JSON string
+  - Implemented by [`\NotificationChannels\Webex\WebexMessage`](src/WebexMessage.php) and [`\NotificationChannels\Webex\WebexMessageAttachment`](src/WebexMessageAttachment.php) classes
+  - Returns the instance as a JSON string
 - These methods are used internally for creating the request payload to Webex HTTP API.
 
 ### Webex Message Methods
