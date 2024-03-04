@@ -343,22 +343,23 @@ class User extends Authenticatable
 
 ## Available Methods
 
-Methods available for converting Webex message instances:
+All messaging classes are under the `\NotificationChannels\Webex` namespace. 
+Some common methods that are available for converting Webex messaging instances:
 
 - `toArray()`:
-  - Implemented by all three classes ([`\NotificationChannels\Webex\WebexMessage`](src/WebexMessage.php), [`\NotificationChannels\Webex\WebexMessageFile`](src/WebexMessageFile.php), [`\NotificationChannels\Webex\WebexMessageAttachment`](src/WebexMessageAttachment.php))
+  - Implemented by all three classes ([`WebexMessage`](src/WebexMessage.php), [`WebexMessageFile`](src/WebexMessageFile.php), [`WebexMessageAttachment`](src/WebexMessageAttachment.php))
   - Returns the instance as an array suitable for `multipart/form-data` request
 - `jsonSerialize()`:
-  - Implemented by [`\NotificationChannels\Webex\WebexMessage`](src/WebexMessage.php) and [`\NotificationChannels\Webex\WebexMessageAttachment`](src/WebexMessageAttachment.php) classes
+  - Implemented by [`WebexMessage`](src/WebexMessage.php) and [`WebexMessageAttachment`](src/WebexMessageAttachment.php) classes
   - Returns the instance as an array suitable for `application/json` request or `json_encode`
 - `toJson(int $options)`:
-  - Implemented by [`\NotificationChannels\Webex\WebexMessage`](src/WebexMessage.php) and [`\NotificationChannels\Webex\WebexMessageAttachment`](src/WebexMessageAttachment.php) classes
+  - Implemented by [`WebexMessage`](src/WebexMessage.php) and [`WebexMessageAttachment`](src/WebexMessageAttachment.php) classes
   - Returns the instance as a JSON string
 - These methods are used internally for creating the request payload to Webex HTTP API.
 
 ### Webex Message Methods
 
-Public methods of the [`\NotificationChannels\Webex\WebexMessage`](src/WebexMessage.php) class:
+Public methods of the [`WebexMessage`](src/WebexMessage.php) class:
 
 - `text(string $content)`: Set the content of the message, in plain text.
 - `markdown(string $content)`: Set the content of the message, in Markdown format.
@@ -369,7 +370,7 @@ Public methods of the [`\NotificationChannels\Webex\WebexMessage`](src/WebexMess
 
 ### Webex Message File Methods
 
-Public methods of the [`\NotificationChannels\Webex\WebexMessageFile`](src/WebexMessageFile.php) class:
+Public methods of the [`WebexMessageFile`](src/WebexMessageFile.php) class:
 
 - `path(string $path)`: Set the path for the file.
 - `name(string $name)`: Set the user provided name for the file.
@@ -377,7 +378,7 @@ Public methods of the [`\NotificationChannels\Webex\WebexMessageFile`](src/Webex
 
 ### Webex Message Attachment Methods
 
-Public methods of the [`\NotificationChannels\Webex\WebexMessageAttachment`](src/WebexMessageAttachment.php) class:
+Public methods of the [`WebexMessageAttachment`](src/WebexMessageAttachment.php) class:
 
 - `contentType(string $contentType)`: Set the content type of the attachment.
 - `content($content)`: Set the content of the attachment.
