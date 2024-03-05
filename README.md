@@ -29,22 +29,23 @@ public function toWebex(mixed $notifiable)
 ## Contents
 
 - [Installation](#installation)
-  - [Install the Package Using Composer](#install-the-package-using-composer)
-  - [Add Service Configuration for Webex](#add-service-configuration-for-webex)
+  - [Install the package using Composer](#install-the-package-using-composer)
+  - [Add service configuration for Webex](#add-service-configuration-for-webex)
 - [Usage](#usage)
   - [Formatting Webex Notifications](#formatting-webex-notifications)
     - [Plain Text Message](#plain-text-message)
     - [Rich Text Message](#rich-text-message)
-    - [Including an Attachment](#including-an-attachment)
-    - [Including a File](#including-a-file)
     - [Replying to a Parent Message](#replying-to-a-parent-message)
-    - [User and Group Mentions](#user-and-group-mentions)
+    - [Including a File](#including-a-file)
+    - [Including an Attachment](#including-an-attachment)
     - [Room/Space Linking](#roomspace-linking)
+    - [User and Group Mentions](#user-and-group-mentions)
   - [Routing Webex Notifications](#routing-webex-notifications)
 - [Available Methods](#available-methods)
-    - [Webex Message Methods](#webex-message-methods)
-    - [Webex Message Attachment Methods](#webex-message-attachment-methods)
-    - [Webex Message File Methods](#webex-message-file-methods)
+  - [Webex Message Methods](#webex-message-methods)
+  - [Webex Message File Methods](#webex-message-file-methods)
+  - [Webex Message Attachment Methods](#webex-message-attachment-methods)
+  - [Interface Method Implementations](#interface-method-implementations)
 - [Changelog](#changelog)
 - [Testing](#testing)
 - [Security](#security)
@@ -56,14 +57,15 @@ public function toWebex(mixed $notifiable)
 
 To use this package, you need to add it as a dependency to your project and provide the necessary configuration.
 
-### Install the Package Using Composer
+### Install the package using Composer
 
 Pull in and manage the Webex notifications package easily with Composer:
+
 ```bash
 composer require laravel-notification-channels/webex
 ```
 
-### Add Service Configuration for Webex
+### Add service configuration for Webex
 
 You will also need to include a Webex service configuration to your application. To do this, edit the
 `config/services.php` file, and add the following, or if the `webex` key already exists, merge:
@@ -77,17 +79,17 @@ You will also need to include a Webex service configuration to your application.
 ```
 
 Use the `WEBEX_NOTIFICATION_CHANNEL_ID` and `WEBEX_NOTIFICATION_CHANNEL_TOKEN`
-[environment variables](https://laravel.com/docs/10.x/configuration#environment-configuration)
+[environment variables](https://laravel.com/docs/9.x/configuration#environment-configuration)
 to define your Webex ID and Token. One way to get these values is by creating a new
 [Webex Bot](https://developer.webex.com/my-apps/new/bot).
 
 ## Usage
 
 If you are new to Laravel Notification, I highly recommend reading the official documentation which goes over the basics
-of [generating](https://laravel.com/docs/10.x/notifications#generating-notifications)
-and [sending](https://laravel.com/docs/10.x/notifications#sending-notifications) notifications.
-The guide below assumes that you have successfully generated a notification class with a
-[`via`](https://laravel.com/docs/10.x/notifications#specifying-delivery-channels)
+of [generating](https://laravel.com/docs/9.x/notifications#generating-notifications)
+and [sending](https://laravel.com/docs/9.x/notifications#sending-notifications) notifications. The guide below assumes
+that you have successfully generated a notification class with a
+[`via`](https://laravel.com/docs/9.x/notifications#specifying-delivery-channels)
 method whose return value includes `'webex'` or `NotificationChannels\Webex\WebexChannel::class`.
 For example:
 
@@ -118,7 +120,7 @@ class InvoicePaid extends Notification
 }
 ```
 
-To format notifications for Webex, define a `toWebex` method on the notification class and a `routeNotificationForWebex`
+To send notifications on Webex, define a `toWebex` method on the notification class and a `routeNotificationForWebex`
 method on the notifiable entity. These steps are discussed below.
 
 ### Formatting Webex Notifications
@@ -126,9 +128,11 @@ method on the notifiable entity. These steps are discussed below.
 If a notification supports being sent as a Webex message, you should define a `toWebex`
 method on the notification class. This method will receive a `$notifiable` entity and should return
 a `\NotificationChannels\Webex\WebexMessage` instance. Webex messages may contain text content
-as well as at most one file or an attachment (for [buttons and cards](https://developer.webex.com/buttons-and-cards-designer)).
+as well as at most one file or an attachment (
+for [buttons and cards](https://developer.webex.com/buttons-and-cards-designer)).
 
 #### Plain Text Message
+
 Let's take a look at a basic `toWebex` example, which we could add to our `InvoicePaid` class
 [above](#usage).
 
@@ -156,6 +160,52 @@ public function toWebex(mixed $notifiable): WebexMessage
 ```
 
 ![Preview on (https://web.webex.com)](https://user-images.githubusercontent.com/6129517/154013359-ae5cf5de-a6c1-4c64-bf4c-1008c041e1e6.png)
+
+#### Replying to a Parent Message
+
+Reply to a parent message and start or advance a thread via the `parentId` method.
+
+```php
+public function toWebex(mixed $notifiable): WebexMessage
+{
+    $messageId = "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL01FU1NBR0UvNGY0ZGExOTAtOGUyMy0xMWVjLTljZWQtNmZkZWE5MjMxNmNj"
+
+    return (new WebexMessage)
+        ->parentId($messageId)
+        ->text("Invoice Paid!" . "\n"
+               "No Further action required at this time");
+}
+```
+
+![Preview on (https://web.webex.com)](https://user-images.githubusercontent.com/6129517/154110938-ddf32f57-c0bd-4e82-85ef-6402a232e1ed.png)
+
+#### Including a File
+
+A notification message can have at most one file that you can include via the
+`file` helper method. When calling the `file` method, you should provide the path of the file. The file path could be
+local or of the form "scheme://...", that is accessible to your application. Optionally, you can
+also provide a name and MIME type to display on Webex clients.
+
+```php
+public function toWebex(mixed $notifiable): WebexMessage
+{
+    $filePath = 'storage/app/invoices/uwnQ0uAXzq.pdf';
+    
+    return (new WebexMessage)
+        ->file(function (WebexMessageFile $file) use ($filePath){
+            $file->path($filePath)          // required
+                ->name('invoice.pdf')       // optional
+                ->type('application/pdf');  // optional
+        });
+}
+```
+
+![Preview on (https://web.webex.com)](https://user-images.githubusercontent.com/6129517/154014597-27eafbc0-01f0-465b-bcb0-cde6ad0d1d30.png)
+
+> [!NOTE]
+> - Including multiple files in the same message is not supported by the `file` helper.
+> - Including file and attachment in the same message is not supported by the `file` helper.
+> - For supported MIME types and file size limits, please refer Webex HTTP API documentation.
 
 #### Including an Attachment
 
@@ -202,51 +252,19 @@ public function toWebex(mixed $notifiable): WebexMessage
 > - Including attachment and file in the same message is not supported by the `attachment` helper.
 > - For supported attachment types, please refer Webex HTTP API documentation.
 
-#### Including a File
+#### Room/Space Linking
 
-A notification message can have at most one file that you can include via the
-`file` helper method. When calling the `file` method, you should provide the path of the file. The file path could be
-local or of the form "scheme://...", that is accessible to your application. Optionally, you can
-also provide a name and MIME type to display on Webex clients.
+To Link to a room/space use its Webex protocol handler, i.e. `webexteams://im?space=<space_id>`.
 
 ```php
 public function toWebex(mixed $notifiable): WebexMessage
 {
-    $filePath = 'storage/app/invoices/uwnQ0uAXzq.pdf';
-    
     return (new WebexMessage)
-        ->file(function (WebexMessageFile $file) use ($filePath){
-            $file->path($filePath)          // required
-                ->name('invoice.pdf')       // optional
-                ->type('application/pdf');  // optional
-        });
+        ->markdown('We are in the webexteams://im?space=f58064a0-8e21-11ec-9d53-739134f9a8eb space.');
 }
 ```
 
-![Preview on (https://web.webex.com)](https://user-images.githubusercontent.com/6129517/154014597-27eafbc0-01f0-465b-bcb0-cde6ad0d1d30.png)
-
-> [!NOTE]
-> - Including multiple files in the same message is not supported by the `file` helper.
-> - Including file and attachment in the same message is not supported by the `file` helper.
-> - For supported MIME types and file size limits, please refer Webex HTTP API documentation. 
-
-#### Replying to a Parent Message
-
-Reply to a parent message and start or advance a thread via the `parentId` method.
-
-```php
-public function toWebex(mixed $notifiable): WebexMessage
-{
-    $messageId = "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL01FU1NBR0UvNGY0ZGExOTAtOGUyMy0xMWVjLTljZWQtNmZkZWE5MjMxNmNj"
-
-    return (new WebexMessage)
-        ->parentId($messageId)
-        ->text("Invoice Paid!" . "\n"
-               "No Further action required at this time");
-}
-```
-
-![Preview on (https://web.webex.com)](https://user-images.githubusercontent.com/6129517/154110938-ddf32f57-c0bd-4e82-85ef-6402a232e1ed.png)
+![Preview on (https://web.webex.com)](https://user-images.githubusercontent.com/6129517/154014364-eb36a360-1b09-47ac-9a3a-017e93bda31b.png)
 
 #### User and Group Mentions
 
@@ -286,20 +304,6 @@ public function toWebex(mixed $notifiable): WebexMessage
 ```
 
 ![Preview on (https://web.webex.com)](https://user-images.githubusercontent.com/6129517/154013869-91edc385-a78f-4cf0-9b49-d8a61b52079d.png)
-
-#### Room/Space Linking
-
-To Link to a room/space use its Webex protocol handler, i.e. `webexteams://im?space=<space_id>`.
-
-```php
-public function toWebex(mixed $notifiable): WebexMessage
-{
-    return (new WebexMessage)
-        ->markdown('We are in the webexteams://im?space=f58064a0-8e21-11ec-9d53-739134f9a8eb space.');
-}
-```
-
-![Preview on (https://web.webex.com)](https://user-images.githubusercontent.com/6129517/154014364-eb36a360-1b09-47ac-9a3a-017e93bda31b.png)
 
 ### Routing Webex Notifications
 
@@ -343,45 +347,73 @@ class User extends Authenticatable
 
 ## Available Methods
 
-All messaging classes are under the `\NotificationChannels\Webex` namespace. 
-Some common methods that are available for converting Webex messaging instances:
-
-- `toArray()`:
-  - Implemented by all three classes ([`WebexMessage`](src/WebexMessage.php), [`WebexMessageFile`](src/WebexMessageFile.php), [`WebexMessageAttachment`](src/WebexMessageAttachment.php))
-  - Returns the instance as an array suitable for `multipart/form-data` request
-- `jsonSerialize()`:
-  - Implemented by [`WebexMessage`](src/WebexMessage.php) and [`WebexMessageAttachment`](src/WebexMessageAttachment.php) classes
-  - Returns the instance as an array suitable for `application/json` request or `json_encode`
-- `toJson(int $options)`:
-  - Implemented by [`WebexMessage`](src/WebexMessage.php) and [`WebexMessageAttachment`](src/WebexMessageAttachment.php) classes
-  - Returns the instance as a JSON string
-- These methods are used internally for creating the request payload to Webex HTTP API.
+All messaging classes are under the `\NotificationChannels\Webex` namespace.
 
 ### Webex Message Methods
 
 Public methods of the [`WebexMessage`](src/WebexMessage.php) class:
 
-- `text(string $content)`: Set the content of the message, in plain text.
-- `markdown(string $content)`: Set the content of the message, in Markdown format.
-- `parentId(string $id)`: Set the parent message to reply to.
-- `to(string $recipient)`: Set the recipient of the message.
-- `file(Closure $callback)`: Set a file to include in the message.
-- `attachment(Closure $callback)`: Set an attachment to include in the message.
-
-### Webex Message Attachment Methods
-
-Public methods of the [`WebexMessageAttachment`](src/WebexMessageAttachment.php) class:
-
-- `contentType(string $contentType)`: Set the content type of the attachment.
-- `content($content)`: Set the content of the attachment.
+- **`text(string $content): WebexMessage`**: Sets the plain text content of the message and returns the current instance
+  with `$text` property set.
+- **`markdown(string $content): WebexMessage`**: Sets the Markdown content of the message and returns the current
+  instance with `$markdown` property set.
+- **`parentId(string $id): WebexMessage`**: Sets the parent message to reply to. Throws
+  a [`CouldNotCreateNotification`](src/Exceptions/CouldNotCreateNotification)
+  exception if the provided Webex HTTP API resource identifier is invalid. Returns the current instance with
+  updated `$parentId` property.
+- **`file(Closure $callback): WebexMessage`**: Adds a file to the message. Throws
+  a [`CouldNotCreateNotification`](src/Exceptions/CouldNotCreateNotification)
+  exception if there's already a file or an attachment present. Returns the current instance with the `$files` property
+  set.
+- **`attachment(Closure $callback): WebexMessage`**: Adds an attachment to the message. Throws
+  a [`CouldNotCreateNotification`](src/Exceptions/CouldNotCreateNotification) exception if there's already an attachment
+  or file present. Returns the current
+  instance with the `$attachments` property set.
+- **`to(string $recipient): WebexMessage`**: Sets the recipient of the message. This method automatically determines if
+  the recipient is a single person/bot (i.e., direct 1:1 room/space) or a group room/space. If the provided recipient is
+  a valid email address, it sets `$toPersonEmail`. If it's a valid Webex HTTP API resource identifier, it
+  sets `$toPersonId` for people/bots or `$roomId` for rooms/spaces. Throws
+  a [`CouldNotCreateNotification`](src/Exceptions/CouldNotCreateNotification) exception if
+  the provided recipient is neither an email, nor a valid Webex HTTP API resource identifier. Returns the current
+  instance with exactly one of `$toPersonEmail`, `$toPersonId`, or `$roomId` set.
 
 ### Webex Message File Methods
 
+Public methods of the [`WebexMessageAttachment`](src/WebexMessageAttachment.php) class:
+
+- **`path(string $path): WebexMessageFile`**: Sets the path for the file and returns the current instance with `$path`
+  property set.
+- **`name(string $name): WebexMessageFile`**: Sets the user provided name for the file and returns the current instance
+  with optional `$name` property set.
+- **`type(string $type): WebexMessageFile`**: Sets the user provided MIME type for the file and returns the current
+  instance with optional `$type` property set.
+
+### Webex Message Attachment Methods
+
 Public methods of the [`WebexMessageFile`](src/WebexMessageFile.php) class:
 
-- `path(string $path)`: Set the path for the file.
-- `name(string $name)`: Set the user provided name for the file.
-- `type(string $type)`: Set the user provided MIME type for the file.
+- **`contentType(string $contentType): WebexMessageAttachment`**: Sets the content type of the attachment and returns
+  the current instance with `$contentType` property set.
+- **`content(mixed $content): WebexMessageAttachment`**: Sets the content of the attachment and returns the current
+  instance with `$content` property set.
+
+### Interface Method Implementations
+
+In addition, there are some methods available for transforming Webex messaging instances that are
+used internally for creating the request payload to Webex HTTP API:
+
+- **`toArray(): array`**: Converts the current instance into an array suitable for `multipart/form-data` request;
+  implemented by all three classes
+  [`WebexMessage`](src/WebexMessage.php), [`WebexMessageFile`](src/WebexMessageFile.php),
+  [`WebexMessageAttachment`](src/WebexMessageAttachment.php).
+- **`jsonSerialize(): array`**:: Converts the current instance as an array suitable for `application/json` request or
+  passing on to`json_encode`;
+  implemented by [`WebexMessage`](src/WebexMessage.php) and [`WebexMessageAttachment`](src/WebexMessageAttachment.php)
+  classes.
+- **`toJson($options = 0): string`**: Converts the current instance into a JSON string using PHP's `json_encode`
+  function, calling `jsonSerialize` internally to get the data for serialization. Takes an optional parameter `$options`
+  to specify JSON encoding options; implemented by [`WebexMessage`](src/WebexMessage.php) and
+  [`WebexMessageAttachment`](src/WebexMessageAttachment.php) classes.
 
 ## Changelog
 
