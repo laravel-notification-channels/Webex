@@ -358,22 +358,19 @@ Public methods of the [`WebexMessage`](src/WebexMessage.php) class:
 - **`markdown(string $content): WebexMessage`**: Sets the Markdown content of the message and returns the current
   instance with `$markdown` property set.
 - **`parentId(string $id): WebexMessage`**: Sets the parent message to reply to. Throws
-  a [`CouldNotCreateNotification`](src/Exceptions/CouldNotCreateNotification)
-  exception if the provided Webex HTTP API resource identifier is invalid. Returns the current instance with
-  updated `$parentId` property.
+  a [`CouldNotCreateNotification`](src/Exceptions/CouldNotCreateNotification.php) exception if the provided Webex HTTP
+  API resource identifier is invalid. Returns the current instance with updated `$parentId` property.
 - **`file(Closure $callback): WebexMessage`**: Adds a file to the message. Throws
-  a [`CouldNotCreateNotification`](src/Exceptions/CouldNotCreateNotification)
-  exception if there's already a file or an attachment present. Returns the current instance with the `$files` property
-  set.
+  a [`CouldNotCreateNotification`](src/Exceptions/CouldNotCreateNotification.php) exception if there's already a file or
+  an attachment present. Returns the current instance with the `$files` property set.
 - **`attachment(Closure $callback): WebexMessage`**: Adds an attachment to the message. Throws
-  a [`CouldNotCreateNotification`](src/Exceptions/CouldNotCreateNotification) exception if there's already an attachment
-  or file present. Returns the current
-  instance with the `$attachments` property set.
+  a [`CouldNotCreateNotification`](src/Exceptions/CouldNotCreateNotification.php) exception if there's already an
+  attachment or file present. Returns the current instance with the `$attachments` property set.
 - **`to(string $recipient): WebexMessage`**: Sets the recipient of the message. This method automatically determines if
   the recipient is a single person/bot (i.e., direct 1:1 room/space) or a group room/space. If the provided recipient is
   a valid email address, it sets `$toPersonEmail`. If it's a valid Webex HTTP API resource identifier, it
   sets `$toPersonId` for people/bots or `$roomId` for rooms/spaces. Throws
-  a [`CouldNotCreateNotification`](src/Exceptions/CouldNotCreateNotification) exception if
+  a [`CouldNotCreateNotification`](src/Exceptions/CouldNotCreateNotification.php) exception if
   the provided recipient is neither an email, nor a valid Webex HTTP API resource identifier. Returns the current
   instance with exactly one of `$toPersonEmail`, `$toPersonId`, or `$roomId` set.
 
