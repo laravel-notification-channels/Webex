@@ -79,17 +79,17 @@ You will also need to include a Webex service configuration to your application.
 ```
 
 Use the `WEBEX_NOTIFICATION_CHANNEL_ID` and `WEBEX_NOTIFICATION_CHANNEL_TOKEN`
-[environment variables](https://laravel.com/docs/9.x/configuration#environment-configuration)
+[environment variables](https://laravel.com/docs/10.x/configuration#environment-configuration)
 to define your Webex ID and Token. One way to get these values is by creating a new
 [Webex Bot](https://developer.webex.com/my-apps/new/bot).
 
 ## Usage
 
 If you are new to Laravel Notification, I highly recommend reading the official documentation which goes over the basics
-of [generating](https://laravel.com/docs/9.x/notifications#generating-notifications)
-and [sending](https://laravel.com/docs/9.x/notifications#sending-notifications) notifications. The guide below assumes
+of [generating](https://laravel.com/docs/10.x/notifications#generating-notifications)
+and [sending](https://laravel.com/docs/10.x/notifications#sending-notifications) notifications. The guide below assumes
 that you have successfully generated a notification class with a
-[`via`](https://laravel.com/docs/9.x/notifications#specifying-delivery-channels)
+[`via`](https://laravel.com/docs/10.x/notifications#specifying-delivery-channels)
 method whose return value includes `'webex'` or `NotificationChannels\Webex\WebexChannel::class`.
 For example:
 
