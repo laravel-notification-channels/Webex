@@ -5,7 +5,7 @@ on:
     types: [ released ]
 
 jobs:
-  update:
+  update-changelog:
     runs-on: ubuntu-latest
 
     steps:

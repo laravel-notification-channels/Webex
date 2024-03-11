@@ -3,7 +3,7 @@ name: Test Coverage
 on: workflow_dispatch
 
 jobs:
-  tests:
+  test-coverage:
     runs-on: ubuntu-latest
 
     steps:
