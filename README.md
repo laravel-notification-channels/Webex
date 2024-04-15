@@ -5,7 +5,7 @@
 [![Build Status](https://img.shields.io/github/actions/workflow/status/laravel-notification-channels/webex/test.yml?branch=main&style=flat-square)](https://github.com/laravel-notification-channels/webex/actions/workflows/test.yml)
 [![Total Downloads](https://img.shields.io/packagist/dt/laravel-notification-channels/webex.svg?style=flat-square)](https://packagist.org/packages/laravel-notification-channels/webex)
 
-This package makes it easy to send notifications using [Webex](https://www.webex.com/) with Laravel 10.x.
+This package makes it easy to send notifications using [Webex](https://www.webex.com/) with Laravel 10 and 11.
 
 ```php
 /**
@@ -86,10 +86,10 @@ to define your Webex ID and Token. One way to get these values is by creating a 
 ## Usage
 
 If you are new to Laravel Notification, I highly recommend reading the official documentation which goes over the basics
-of [generating](https://laravel.com/docs/10.x/notifications#generating-notifications)
-and [sending](https://laravel.com/docs/10.x/notifications#sending-notifications) notifications. The guide below assumes
+of [generating](https://laravel.com/docs/11.x/notifications#generating-notifications)
+and [sending](https://laravel.com/docs/11.x/notifications#sending-notifications) notifications. The guide below assumes
 that you have successfully generated a notification class with a
-[`via`](https://laravel.com/docs/10.x/notifications#specifying-delivery-channels)
+[`via`](https://laravel.com/docs/11.x/notifications#specifying-delivery-channels)
 method whose return value includes `'webex'` or `NotificationChannels\Webex\WebexChannel::class`.
 For example:
 
